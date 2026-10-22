@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -38,7 +41,20 @@ jobs:
             grep -E "error:|warning:.*deprecat^|What went wrong|Exception" build.log | head -25 | while IFS= read -r l; do echo "::error::$l"; done
             exit 1; }
 
+      - name: Preimenuj APK
+        run: cp app/build/outputs/apk/release/app-release.apk MojFilm.apk
+
       - uses: actions/upload-artifact@v4
         with:
           name: MojFilm-apk
-          path: app/build/outputs/apk/release/*.apk
+          path: MojFilm.apk
+
+      - name: Objavi za preuzimanje (Releases)
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: MojFilm 1.0.${{ github.run_number }}
+          body: MojFilm Android aplikacija
+          files: MojFilm.apk
+          make_latest: true
