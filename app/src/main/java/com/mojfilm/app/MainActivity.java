@@ -171,7 +171,7 @@ public class MainActivity extends Activity {
                 customViewCallback = callback;
                 root.addView(view, match());
                 web.setVisibility(View.GONE);
-                setImmersive(true);
+                setFullscreenMode(true);
             }
 
             @Override
@@ -274,12 +274,12 @@ public class MainActivity extends Activity {
         root.removeView(customView);
         customView = null;
         web.setVisibility(View.VISIBLE);
-        setImmersive(false);
+        setFullscreenMode(false);
         if (customViewCallback != null) customViewCallback.onCustomViewHidden();
         customViewCallback = null;
     }
 
-    private void setImmersive(boolean on) {
+    private void setFullscreenMode(boolean on) {
         if (android.os.Build.VERSION.SDK_INT >= 30) {
             WindowInsetsController c = getWindow().getInsetsController();
             if (c == null) return;
